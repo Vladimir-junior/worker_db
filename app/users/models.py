@@ -30,11 +30,48 @@ class UserManager(BaseUserManager):
         return self._create_user(email, password, **extra_fields)
 
 
+
+
+class Position(models.Model):
+    name = models.CharField(max_length=200, blank=True)
+
+
 class User(AbstractUser):
     username = models.CharField(_("username"), max_length=150, blank=True)
     email = models.EmailField(_('email address'), unique=True, blank=True)
 
-    objects = UserManager()
 
+    position= models.ForeignKey('Position', on_delete=models.CASCADE, null=True)
+    rate = models.FloatField(blank=True, null=True)
+    #department = models.ForeignKey('Department', on_delete=models.CASCADE)
+
+
+    objects = UserManager()
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = []
+
+
+
+
+class Department(models.Model):
+    name = models.CharField(max_length=200, blank=True)
+    manager = models.ForeignKey('User', on_delete=models.CASCADE)
+
+
+class WorkingHours(models.Model):
+    user = models.ForeignKey('User', on_delete=models.CASCADE)
+    date = models.DateField(blank=True)
+    hours = models.FloatField(blank=True)
+    description = models.TextField(max_length=300, blank=True)
+
+class Payouts(models.Model):
+    user = models.ForeignKey('User', on_delete=models.CASCADE)
+    begin_date_interval = models.DateTimeField(blank=True)
+    end_date_interval = models.DateTimeField(blank=True)
+    amount = models.FloatField(blank=True)
+    status = models.IntegerField(blank=True)
+
+class Bonus(models.Model):
+    payout = models.ForeignKey('Payouts', on_delete=models.CASCADE)
+    amount = models.FloatField(blank=True)
+    description = models.TextField(blank=True)
