@@ -43,7 +43,7 @@ class User(AbstractUser):
 
     position= models.ForeignKey('Position', on_delete=models.CASCADE, null=True)
     rate = models.FloatField(blank=True, null=True)
-    #department = models.ForeignKey('Department', on_delete=models.CASCADE)
+    department = models.ForeignKey('Department', related_name='users', null=True, on_delete=models.CASCADE)
 
 
     objects = UserManager()
@@ -55,7 +55,7 @@ class User(AbstractUser):
 
 class Department(models.Model):
     name = models.CharField(max_length=200, blank=True)
-    manager = models.ForeignKey('User', on_delete=models.CASCADE)
+    manager = models.ForeignKey('User', related_name='+', on_delete=models.CASCADE)
 
 
 class WorkingHours(models.Model):
