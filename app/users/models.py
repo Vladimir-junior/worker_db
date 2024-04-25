@@ -76,7 +76,8 @@ class Payouts(models.Model):
     amount = models.FloatField(blank=True)
     status = models.IntegerField(blank=True)
 
-
+    def __str__(self):
+        return str(self.user)
 
 class Bonus(models.Model):
     payout = models.ForeignKey('Payouts', on_delete=models.CASCADE)
