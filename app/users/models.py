@@ -4,7 +4,6 @@ from django.contrib.auth.models import AbstractUser
 from django.utils.translation import gettext_lazy as _
 from django.contrib.auth.models import UserManager as BaseUserManager
 
-
 class UserManager(BaseUserManager):
     def _create_user(self, email, password, **extra_fields):
         email = self.normalize_email(email)
@@ -30,14 +29,16 @@ class UserManager(BaseUserManager):
         return self._create_user(email, password, **extra_fields)
 
 
-
-
 class Position(models.Model):
     name = models.CharField(max_length=200, blank=True)
+
+    def __str__(self):
+        return self.name
 
 
 class User(AbstractUser):
     username = models.CharField(_("username"), max_length=150, blank=True)
+
     email = models.EmailField(_('email address'), unique=True, blank=True)
 
 
@@ -50,6 +51,8 @@ class User(AbstractUser):
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = []
 
+    def __str__(self):
+        return self.first_name  + " " +  self.last_name
 
 
 
@@ -57,6 +60,8 @@ class Department(models.Model):
     name = models.CharField(max_length=200, blank=True)
     manager = models.ForeignKey('User', related_name='+', on_delete=models.CASCADE)
 
+    def __str__(self):
+        return self.name
 
 class WorkingHours(models.Model):
     user = models.ForeignKey('User', on_delete=models.CASCADE)
@@ -71,7 +76,10 @@ class Payouts(models.Model):
     amount = models.FloatField(blank=True)
     status = models.IntegerField(blank=True)
 
+
+
 class Bonus(models.Model):
     payout = models.ForeignKey('Payouts', on_delete=models.CASCADE)
     amount = models.FloatField(blank=True)
     description = models.TextField(blank=True)
+
