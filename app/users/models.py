@@ -4,6 +4,7 @@ from django.contrib.auth.models import AbstractUser
 from django.utils.translation import gettext_lazy as _
 from django.contrib.auth.models import UserManager as BaseUserManager
 
+
 class UserManager(BaseUserManager):
     def _create_user(self, email, password, **extra_fields):
         email = self.normalize_email(email)
@@ -31,6 +32,7 @@ class UserManager(BaseUserManager):
 
 class Position(models.Model):
     name = models.CharField(max_length=200, blank=True)
+    employees_count = models.PositiveIntegerField(default=0, editable=False)
 
     def __str__(self):
         return self.name
@@ -41,36 +43,38 @@ class User(AbstractUser):
 
     email = models.EmailField(_('email address'), unique=True, blank=True)
 
-
-    position= models.ForeignKey('Position', on_delete=models.CASCADE, null=True)
+    position = models.ForeignKey(Position, on_delete=models.CASCADE, null=True)
     rate = models.FloatField(blank=True, null=True)
     department = models.ForeignKey('Department', related_name='users', null=True, on_delete=models.CASCADE)
-
 
     objects = UserManager()
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = []
 
     def __str__(self):
-        return self.first_name  + " " +  self.last_name
-
+        return self.first_name + " " + self.last_name
 
 
 class Department(models.Model):
     name = models.CharField(max_length=200, blank=True)
-    manager = models.ForeignKey('User', related_name='+', on_delete=models.CASCADE)
+    manager = models.ForeignKey(User, related_name='+', on_delete=models.CASCADE)
 
     def __str__(self):
         return self.name
 
+
 class WorkingHours(models.Model):
-    user = models.ForeignKey('User', on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     date = models.DateField(blank=True)
     hours = models.FloatField(blank=True)
     description = models.TextField(max_length=300, blank=True)
 
+    def __str__(self):
+        return f"{self.user} - {self.date}"
+
+
 class Payouts(models.Model):
-    user = models.ForeignKey('User', on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     begin_date_interval = models.DateTimeField(blank=True)
     end_date_interval = models.DateTimeField(blank=True)
     amount = models.FloatField(blank=True)
@@ -79,8 +83,8 @@ class Payouts(models.Model):
     def __str__(self):
         return str(self.user)
 
+
 class Bonus(models.Model):
-    payout = models.ForeignKey('Payouts', on_delete=models.CASCADE)
+    payout = models.ForeignKey(Payouts, on_delete=models.CASCADE)
     amount = models.FloatField(blank=True)
     description = models.TextField(blank=True)
-

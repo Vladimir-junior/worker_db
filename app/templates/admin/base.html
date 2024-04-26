@@ -85,11 +85,6 @@
         {% endif %}
 
         <div class="main" id="main">
-          {% if not is_popup and is_nav_sidebar_enabled %}
-            {% block nav-sidebar %}
-              {% include "admin/nav_sidebar.html" %}
-            {% endblock %}
-          {% endif %}
           <main id="content-start" class="content" tabindex="-1">
             {% block messages %}
               {% if messages %}
