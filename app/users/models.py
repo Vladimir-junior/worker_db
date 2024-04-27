@@ -1,4 +1,5 @@
 from django.db import models
+from django.db.models import Sum
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.models import AbstractUser
 from django.utils.translation import gettext_lazy as _
@@ -78,13 +79,21 @@ class Payouts(models.Model):
     begin_date_interval = models.DateTimeField(blank=True)
     end_date_interval = models.DateTimeField(blank=True)
     amount = models.FloatField(blank=True)
-    status = models.IntegerField(blank=True)
+    status = models.BooleanField(default=False)
 
     def __str__(self):
         return str(self.user)
+
+    @property
+    def total_amount(self):
+        payouts_amount = self.amount
+        bonus_amount = self.bonus_set.aggregate(total_bonus_amount=Sum('amount'))['total_bonus_amount'] or 0
+        return payouts_amount + bonus_amount
 
 
 class Bonus(models.Model):
     payout = models.ForeignKey(Payouts, on_delete=models.CASCADE)
     amount = models.FloatField(blank=True)
     description = models.TextField(blank=True)
+
+

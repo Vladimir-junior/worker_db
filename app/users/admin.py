@@ -38,16 +38,19 @@ class PayoutsAdmin(admin.ModelAdmin):
 
     search_fields = ["user__first_name", "user__last_name"]
 
+    readonly_fields = ['total_amount']
 
 
 
 
+class BonusAdmin(admin.ModelAdmin):
+    list_display = ["payout", "amount", "description"]
 
 
 
 admin.site.register(Payouts, PayoutsAdmin)
 admin.site.register(Position, PositionAdmin)
-admin.site.register(Bonus)
+admin.site.register(Bonus, BonusAdmin)
 admin.site.register(Department, DepartmentAdmin)
 admin.site.register(WorkingHours, WorkingHoursAdmin)
 admin.site.register(User, UserAdmin)
