@@ -1,4 +1,4 @@
-version: '3.9'
+version: '3.8'
 
 volumes:
   db_data:
@@ -16,17 +16,21 @@ services:
       - db_data:/var/lib/mysql
     ports:
       - 3306:3306
-  app:
-    image: python:3.12
-    volumes:
-      - ./app:/app
-    working_dir: /app
-    ports:
-      - 8000:8000
-    command: sleep 1000000
+
   adminer:
     image: adminer
     ports:
       - 8080:8080
 
-
+  app:
+    build: .
+    image: truten_app
+    working_dir: /app
+    volumes:
+      - ./app:/app
+    depends_on:
+      - db
+    ports:
+      - 8000:8000
+#    command: sleep 10000000
+    command: "./manage.py runserver 0.0.0.0:8000"
