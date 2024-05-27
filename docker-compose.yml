@@ -32,5 +32,5 @@ services:
       - db
     ports:
       - 8000:8000
-#    command: sleep 10000000
-    command: "./manage.py runserver 0.0.0.0:8000"
+    command: sleep 10000000
+#    command: "./manage.py runserver 0.0.0.0:8000"

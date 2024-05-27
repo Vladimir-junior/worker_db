@@ -52,7 +52,7 @@ class WorkingHoursAdmin(admin.ModelAdmin):
 
 
 class UserAdmin(admin.ModelAdmin):
-    list_display = ["user_full_name", "department", "position", "rate"]
+    list_display = ["user_full_name", "department", "position", "rate", "employee_code"]
 
     search_fields = ["first_name", "last_name"]
 
@@ -63,6 +63,7 @@ class UserAdmin(admin.ModelAdmin):
         "position",
         "rate",
         "department",
+        "employee_code",
     ]
 
     @admin.display(empty_value="-")
